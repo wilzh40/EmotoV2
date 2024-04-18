@@ -1,9 +1,20 @@
 // Main Three.js code module
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js';
-import { fetchAllFiles }  from './motion.js';
+import { fetchAllFiles } from './motion.js';
 
 let camera, scene, renderer, videoMesh;
 const allMotions = await fetchAllFiles();
+let currentIndex = 1;
+let lastMessageTime = 0;
+const startTime = performance.now();
+let pitch = 0;
+let yaw = 0;
+let roll = 0;
+
+const states = {
+    opening: "opening",
+    yes: "yesSequence",
+}
 
 init();
 animate();
@@ -43,7 +54,7 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 
     // Handle debug view toggle.
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.code === 'Space') { // Checks if the spacebar is pressed
             event.preventDefault(); // Prevent any default action associated with the Space key
             const debugView = document.getElementById('debugView');
@@ -57,16 +68,15 @@ function init() {
 
 }
 
-let pitch, yaw, roll;
 function animate() {
     requestAnimationFrame(animate);
     // Random orientation for debugging. 
     const orientation = {
-        pitch : Math.sin(Date.now() * 0.001) * Math.PI,
-        yaw : Math.sin(Date.now() * 0.001) * Math.PI,
-        roll : Math.cos(Date.now() * 0.001) * Math.PI,
+        pitch: Math.sin(Date.now() * 0.001) * Math.PI,
+        yaw: Math.sin(Date.now() * 0.001) * Math.PI,
+        roll: Math.cos(Date.now() * 0.001) * Math.PI,
     }
-    loopThroughMotion("start")
+    loopThroughMotion("opening")
     // let message = getMessageByTimestamp(Date.now());
 
     // // const orientation = getOrientationByIndex(currentIndex++);
@@ -74,38 +84,59 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-let currentIndex = 1;
-const startTime = performance.now()
 function loopThroughMotion(motionName) {
     const motion = allMotions[motionName];
-    if (!motion || !motion.length) return;
+    if (!motion || !motion.length) {
+        console.error("Error: no motion detected for: motion_name")
+        return;
+    }
     const now = performance.now();
-    const elapsedTime = now - startTime;
-    if (currentIndex < motion.length - 1 && elapsedTime > motion[currentIndex + 1].timestamp){
+    const elapsedTime = now - lastMessageTime;
+    console.log(elapsedTime, lastMessageTime, motion[currentIndex].timestamp)
+    // Start_time
+    if (currentIndex < motion.length - 1 && elapsedTime > motion[currentIndex + 1].timestamp - motion[currentIndex].timestamp) {
         const message = motion[currentIndex + 1];
-        updateOrientationMessage(message);
         currentIndex = currentIndex + 1;
+        lastMessageTime = now;
+        updateOrientationMessage(message);
     }
     if (currentIndex >= motion.length - 1) {
         console.log("Animation over.")
+        currentIndex = 0;
     } else {
-        requestAnimationFrame(() => loopThroughMotion(motionName));
+        // requestAnimationFrame(() => loopThroughMotion(motionName));
     }
 }
 
 function updateOrientationMessage(message) {
     switch (message.motor) {
         // Pitch.
-        case 1:
-            videoMesh.rotation.x = THREE.MathUtils.degToRad(message.value);
+        case 0:
+            roll = message.value;
+            break;
         // Yaw.
-        case 2:
-            videoMesh.rotation.x = THREE.MathUtils.degToRad(message.value);
+        case 1:
+            yaw = message.value;
+            break;
         // Roll.
-        case 3:
-            videoMesh.rotation.x = THREE.MathUtils.degToRad(message.value);
+        case 2:
+            pitch = message.value; 
+            break;
     }
+
+    videoMesh.rotation.x = THREE.MathUtils.degToRad(pitch);
+    videoMesh.rotation.y = THREE.MathUtils.degToRad(yaw);
+    videoMesh.rotation.z = THREE.MathUtils.degToRad(roll);
 }
+
+function updateDebugInfo(pitch, yaw, roll, state) {
+    document.getElementById('pitchValue').textContent = pitch.toFixed(2);
+    document.getElementById('yawValue').textContent = yaw.toFixed(2);
+    document.getElementById('rollValue').textContent = roll.toFixed(2);
+    document.getElementById('timestamp').textContent = performance.now().toFixed(2);
+    document.getElementById('currentState').textContent = state;
+}
+
 
 function updateOrientation(pitch, yaw, roll) {
     videoMesh.rotation.x = THREE.MathUtils.degToRad(pitch);
@@ -119,3 +150,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+setInterval(() => {
+    updateDebugInfo(pitch, yaw, roll, "testState");
+}, 33);  // Update every second for demonstration
