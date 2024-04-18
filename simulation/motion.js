@@ -7,7 +7,7 @@ const fileNames = [
 ];
 
 // Function to fetch all files and store them in an object
-export async function fetchAllFiles(fileNames) {
+export async function fetchAllFiles() {
     const filesDictionary = {};
 
     // Helper function to fetch a single file
@@ -37,16 +37,6 @@ export async function fetchAllFiles(fileNames) {
 }
 
 export function getOrientationByIndex(index) {
-    // const data = lookingAround[index];
-
-
-    //     const pitch = Math.sin(Date.now() * 0.001) * Math.PI * 0.1;
-    //     const yaw = Math.sin(Date.now() * 0.001) * Math.PI * 0.1;
-    //     const roll = Math.cos(Date.now() * 0.001) * Math.PI * 0.1;
-    //     updateOrientation(pitch, yaw, roll);
-
-    // print(allMotions["yesSequence.json"])
-    // print(allMotions["opening.json"])
     console.log(allMotions["opening"][index])
 
     return {

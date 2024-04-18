@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>3D Video Plane with Three.js</title>
-    <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { width: 100%; height: 100%; display: block; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="debugView" class="debug-view">
+        <div id="pitch">Pitch: 0°</div>
+        <div id="yaw">Yaw: 0°</div>
+        <div id="roll">Roll: 0°</div>
+    </div>
     <script type="module" src="./index.js"></script>
 </body>
 </html>
