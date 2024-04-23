@@ -1,0 +1,22 @@
+{
+    "name": "emoto_hume",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@humeai/voice-react": "file:./evi-sdk/humeai-voice-react-0.0.0-beta.17.tgz",
+        "@humeai/voice": "file:./evi-sdk/humeai-voice-react-0.0.0-beta.17.tgz"
+    },
+    "devDependencies": {
+        "typescript": "^5.2.2",
+        "vite": "^5.1.4"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}

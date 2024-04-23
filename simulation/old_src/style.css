@@ -7,7 +7,8 @@ body { margin: 0; overflow: hidden; }
     background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
     padding: 5px;
     font-family: Monospace;
-    display: none;   /* Initially hidden */
+    display: block;
+    /* display: none;   Initially hidden */
     z-index: 1000;   /* Ensures it's on top of other elements */
     border-radius: 8px;  /* Optional: adds rounded corners */
 }

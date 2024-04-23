@@ -11,7 +11,7 @@ export async function fetchAllFiles() {
     const filesDictionary = {};
 
     // Helper function to fetch a single file
-    const fetchFile = (fileName) => fetch(`./motion/${fileName}`)
+    const fetchFile = (fileName) => fetch(`../motion/${fileName}`)
         .then(response => response.json())
         .then(data => {
             // Strip filename.

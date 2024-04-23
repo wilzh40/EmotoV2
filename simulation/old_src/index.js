@@ -34,7 +34,7 @@ function init() {
     const video = document.createElement('video');
     video.loop = true;
     video.muted = true; // Required to play without user interaction
-    video.src = 'assets/happyCenter.mp4'; // Set the video source.
+    video.src = '../assets/happyCenter.mp4'; // Set the video source.
     video.load(); // Must call after setting/changing source.
     video.play().then(() => {
         console.log("Video playback started successfully.");
@@ -110,17 +110,16 @@ function loopThroughMotion(motionName) {
 
 function updateOrientationMessage(message) {
     switch (message.motor) {
-        // Pitch.
         case 0:
-            roll = message.value;
-            break;
-        // Yaw.
-        case 1:
+            // pitch = message.value; 
+            // pitch = message.value;
             yaw = message.value;
             break;
-        // Roll.
+        case 1:
+            pitch = message.value;
+            break;
         case 2:
-            pitch = message.value; 
+            roll = message.value;
             break;
     }
 
