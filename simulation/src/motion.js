@@ -1,17 +1,15 @@
-// import lookingAround from './motion/curiouslyLookingAround.json'
-
 // List of JSON file names from the "motion" directory
-const fileNames = [
+const motionFileNames = [
     'opening.json',
-    'yesSequence.json',
+    'yes_sequence.json',
 ];
 
-// Function to fetch all files and store them in an object
-export async function fetchAllFiles() {
+// Fetches all robot motions and returns a dictionary.
+export async function fetchAllMotions() {
     const filesDictionary = {};
 
     // Helper function to fetch a single file
-    const fetchFile = (fileName) => fetch(`../motion/${fileName}`)
+    const fetchFile = (fileName) => fetch(`../motions/${fileName}`)
         .then(response => response.json())
         .then(data => {
             // Strip filename.
@@ -21,7 +19,7 @@ export async function fetchAllFiles() {
         });
 
     // Create an array of promises using the helper function
-    const promises = fileNames.map(fileName => fetchFile(fileName));
+    const promises = motionFileNames.map(fileName => fetchFile(fileName));
 
     // Use Promise.all to wait for all promises to resolve
     await Promise.all(promises)
@@ -36,17 +34,3 @@ export async function fetchAllFiles() {
     return filesDictionary;
 }
 
-export function getOrientationByIndex(index) {
-    console.log(allMotions["opening"][index])
-
-    return {
-        pitch: Math.sin(Date.now() * 0.001) * Math.PI * 0.1,
-        yaw: Math.sin(Date.now() * 0.001) * Math.PI * 0.1,
-        roll: Math.sin(Date.now() * 0.001) * Math.PI * 0.1,
-    }
-    return {
-        pitch: data.pitch,
-        yaw: data.yaw,
-        roll: data.roll
-    };
-}

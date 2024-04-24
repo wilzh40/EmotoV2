@@ -19,5 +19,5 @@
       "noUnusedParameters": false,
       "noFallthroughCasesInSwitch": true,
     },
-    "include": ["src", "src/index.js", "old_src/motion.js"]
+    "include": ["src", "src/index.ts", "src/motion.js"]
   }
