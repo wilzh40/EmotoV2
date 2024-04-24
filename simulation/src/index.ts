@@ -2,12 +2,17 @@
 import * as THREE from 'three';
 import {  fetchAllMotions } from './motion.js';
 import { fetchAllEyes } from './eyes.ts';
+import OpenAI from "openai";
 
+// Init variables for our renderer and display.
 let camera, scene, renderer, videoMesh;
+const video = document.createElement('video');
+const debugUpdateRate = 1000.0 / 30.0; // 30 fps.
+
+// Init variables for animating motion.
+const startTime = performance.now();
 let currentMotionFrameIndex = 0;
 let lastMessageTime = 0;
-const debugUpdateRate = 1000.0 / 30.0; // 30 fps.
-const startTime = performance.now();
 let pitch = 0;
 let yaw = 0;
 let roll = 0;
@@ -25,17 +30,46 @@ console.log("Motion states:", motionStates);
 console.log("Eye states:", eyeStates);
 
 function cycleMotionState() {
+    // TODO: Add motion interpolation code.
+    currentMotionFrameIndex = 0;
     currentMotionStateIndex = (currentMotionStateIndex + 1) % motionStates.length;
     motionState = motionStates[currentMotionStateIndex];
 }
 
 function cycleEyeState() {
+    // TODO: Add eye interpolation code.
     currentEyeStateIndex = (currentEyeStateIndex + 1) % eyeStates.length;
     eyeState = eyeStates[currentEyeStateIndex];
+    video.src = allEyes[eyeState];
+    video.load(); // Must call after setting/changing source.
+    video.play().then(() => {
+        console.log("Video playback started successfully.");
+    }).catch(error => {
+        console.error("Error attempting to play video:", error);
+    });
 }
+
+const openai = new OpenAI(
+    {
+        apiKey: import.meta.env.VITE_OAI_API_KEY,
+        // TODO: Abstract this into a backend call eventually...
+        dangerouslyAllowBrowser: true
+    }
+);
 
 init();
 animate();
+
+  /**
+   * type safe getElement utility function
+   *
+   * @param id safe getElement utility function
+   * @returns the HTML element if found
+   */
+  function getElementById<T extends HTMLElement>(id: string): T | null {
+    const element = document.getElementById(id);
+    return element as T | null;
+  }
 
 function init() {
     // Scene setup.
@@ -49,7 +83,6 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     // Video texture setup.
-    const video = document.createElement('video');
     video.loop = true;
     video.muted = true; // Required to play without user interaction
     video.src = allEyes[eyeState];
@@ -83,7 +116,22 @@ function init() {
                 debugView.style.display = 'none'; // Hide the debug view
             }
         }
+        if (event.code === "KeyE") {
+            event.preventDefault(); // Prevent any default action associated with the Space key
+            cycleEyeState();
+            console.log("Cycling eye state.")
+        }
+        if (event.code === "KeyM") {
+            event.preventDefault();
+            cycleMotionState();
+            console.log("Cycling motion state.")
+        }
+
     });
+
+    // Add actions to certain buttons.
+    const gptBtn = getElementById<HTMLButtonElement>('gpt-btn');
+    gptBtn?.addEventListener('click', fetchChatCompletion);
 
 }
 
@@ -122,7 +170,7 @@ function loopThroughMotion() {
         console.log("Animation over.")
         currentMotionFrameIndex = 0;
     } else {
-        console.log("No need to update", currentMotionFrameIndex, lastMessageTime, motion[currentMotionFrameIndex+1].timestamp)
+        // console.log("No need to update", currentMotionFrameIndex, lastMessageTime, motion[currentMotionFrameIndex+1].timestamp)
         // requestAnimationFrame(() => loopThroughMotion(motionName));
     }
 }
@@ -174,3 +222,34 @@ function onWindowResize(): void {
 setInterval(() => {
     updateDebugInfo(pitch, yaw, roll, "testState");
 }, debugUpdateRate);  // Update every second for demonstration
+
+
+async function fetchChatCompletion(): Promise<void> {
+    const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: "You are a helpful assistant." }],
+        model: "gpt-3.5-turbo",
+      });
+    console.log(completion.choices[0]);
+    // try {
+    //     const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': "application/json",
+    //             'Authorization': `Bearer ${OAI_API_KEY}`
+    //         },
+    //         body: JSON.stringify({
+    //             prompt: 'Call ChatGPT4 API',
+    //             max_tokens: 100,
+    //             temperature: 0.7,
+    //             n: 1,
+    //             stop: '\n'
+    //         })
+    //     });
+
+    //     const responseData = await response.json();
+    //     const completion = responseData.choices[0].text.trim();
+    //     console.log(completion);
+    // } catch (error) {
+    //     console.error('Error calling ChatGPT4 API:', error);
+    // }
+}

@@ -1,8 +1,25 @@
-body { margin: 0; overflow: hidden; }
+body { 
+    margin: 0; 
+    overflow: hidden;
+    font-family: Monospace;
+ }
+.chat-view {
+    position: fixed;  /* Changed from absolute to fixed to keep it in view */
+    left: 10px;        /* Positioned at the top of the page */
+    bottom: 10px;       /* Positioned on the left side of the page */
+    color: white;
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
+    padding: 5px;
+    font-family: Monospace;
+    display: block;
+    z-index: 1000;   /* Ensures it's on top of other elements */
+    border-radius: 8px;  /* Optional: adds rounded corners */
+    overflow: auto;  /* Adds a scrollbar when content exceeds the element's height */
+}
 .debug-view {
     position: fixed;  /* Changed from absolute to fixed to keep it in view */
-    right: 10px;        /* Positioned at the top of the page */
-    bottom: 10px;       /* Positioned on the left side of the page */
+    left: 10px;        /* Positioned at the top of the page */
+    top: 10px;       /* Positioned on the left side of the page */
     color: white;
     background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
     padding: 5px;
@@ -13,5 +30,4 @@ body { margin: 0; overflow: hidden; }
     border-radius: 8px;  /* Optional: adds rounded corners */
 }
 
-body { margin: 0; overflow: hidden; }
 canvas { width: 100%; height: 100%; display: block; }
