@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Empathic Voice Interface</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EmotoV2</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+  <div id="debugView" class="debug-view">
+    <div>Pitch: <span id="pitchValue">0</span>°</div>
+    <div>Yaw: <span id="yawValue">0</span>°</div>
+    <div>Roll: <span id="rollValue">0</span>°</div>
+    <div>Timestamp: <span id="timestamp">Idle</span></div>
+    <div>State: <span id="currentState">Idle</span></div>
+    <br>
     <div id="app">
       <button id="auth-btn">Authenticate</button>
       <button id="start-btn" disabled="true">Start</button>
       <button id="end-btn" disabled="true">End</button>
-      <div id="chat">
-        <h2>Chat</h2>
-      </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/evi.ts"></script>
+  <script type="module" src="/src/index.ts"></script>
+</body>
 </html>
+

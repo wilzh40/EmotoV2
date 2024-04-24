@@ -1,8 +1,8 @@
 body { margin: 0; overflow: hidden; }
 .debug-view {
     position: fixed;  /* Changed from absolute to fixed to keep it in view */
-    top: 10px;        /* Positioned at the top of the page */
-    left: 10px;       /* Positioned on the left side of the page */
+    right: 10px;        /* Positioned at the top of the page */
+    bottom: 10px;       /* Positioned on the left side of the page */
     color: white;
     background: rgba(0, 0, 0, 0.7);  /* Semi-transparent black background */
     padding: 5px;

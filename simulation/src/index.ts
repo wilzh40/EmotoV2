@@ -1,6 +1,6 @@
 // Main Three.js code module
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js';
-import { fetchAllFiles } from './motion.js';
+import * as THREE from 'three';
+import { fetchAllFiles } from '../old_src/motion.js';
 
 let camera, scene, renderer, videoMesh;
 const allMotions = await fetchAllFiles();
@@ -109,17 +109,19 @@ function loopThroughMotion(motionName) {
 }
 
 function updateOrientationMessage(message) {
+    const scalingFactor = 0.2;
+    const shift = 23.0;
     switch (message.motor) {
         case 0:
             // pitch = message.value; 
             // pitch = message.value;
-            yaw = message.value;
+            yaw = (message.value * scalingFactor) - shift;
             break;
         case 1:
-            pitch = message.value;
+            pitch = (message.value * scalingFactor) - shift;
             break;
         case 2:
-            roll = message.value;
+            roll = message.value * scalingFactor;
             break;
     }
 
