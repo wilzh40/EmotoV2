@@ -9,8 +9,13 @@
 </head>
 
 <body>
-  <div id="chat" class="chat-view"></div>
   <div id="debugView" class="debug-view">
+    <div id="app">
+      <button id="auth-btn">Authenticate</button>
+      <button id="start-btn" disabled="true">Start</button>
+      <button id="end-btn" disabled="true">End</button>
+      <button id="gpt-btn" disabled="true"> GPT </button>
+    </div>
     <div>Pitch: <span id="pitchValue">0</span>°</div>
     <div>Yaw: <span id="yawValue">0</span>°</div>
     <div>Roll: <span id="rollValue">0</span>°</div>
@@ -19,16 +24,11 @@
     <div>Current Eye Sequence: <span id="currentEyesState">Idle</span></div>
     <div>Next Motion: <span id="nextMotionState">Idle</span></div>
     <div>Next Eye Sequence: <span id="nextEyesState">Idle</span></div>
-
-    <div id="app">
-      <button id="auth-btn">Authenticate</button>
-      <button id="start-btn" disabled="true">Start</button>
-      <button id="end-btn" disabled="true">End</button>
-      <button id="gpt-btn"> GPT </button>
-    </div>
+    <div>Rationale: <span id="nextStateRationale">Idle</span></div>
+    <div id="chat" class="chat-view"></div>
   </div>
   <script type="module" src="/src/evi.ts"></script>
   <script type="module" src="/src/index.ts"></script>
 </body>
-</html>
 
+</html>

@@ -2,7 +2,6 @@
 import * as THREE from 'three';
 import { fetchAllMotions } from '../shared/motion.js';
 import { fetchAllEyes } from '../shared/eyes.js';
-import OpenAI from "openai";
 import * as evi from './evi.ts'
 
 // Init variables for our renderer and display.
@@ -12,6 +11,7 @@ const debugUpdateRate = 1000.0 / 30.0; // 30 fps.
 
 // Init variables for animating motion.
 const startTime = performance.now();
+let lastStateSwitch = performance.now();
 let currentMotionFrameIndex = 0;
 let lastMessageTime = 0;
 let pitch = 0;
@@ -27,7 +27,9 @@ let currentMotionStateIndex = 0;
 let currentEyeStateIndex = 0;
 let motionState = motionStates[currentMotionStateIndex];
 let eyeState = eyeStates[currentEyeStateIndex];
-let nextMotionState, nextEyeState;
+let nextMotionState, nextEyeState, nextStateRationale;
+// If there is a next state, let's switch!
+const stateSwitchIntervalMillis = 5000;
 console.log("Motion states:", motionStates);
 console.log("Eye states:", eyeStates);
 
@@ -51,13 +53,21 @@ function cycleEyeState() {
     });
 }
 
-const openai = new OpenAI(
-    {
-        apiKey: import.meta.env.VITE_OAI_API_KEY,
-        // TODO: Abstract this into a backend call eventually...
-        dangerouslyAllowBrowser: true
-    }
-);
+function cycleNextStates() {
+    const now = performance.now()
+    console.log(lastStateSwitch, stateSwitchIntervalMillis, now)
+    if (now > lastStateSwitch + stateSwitchIntervalMillis && 
+        nextEyeState && nextMotionState) {
+            eyeState = nextEyeState;
+            motionState = nextMotionState;
+            lastMessageTime = now;
+            lastStateSwitch = now;
+            currentEyeStateIndex = 0;
+            nextEyeState = undefined;
+            nextMotionState = undefined;
+            nextStateRationale = undefined;
+        }
+}
 
 init();
 animate();
@@ -175,6 +185,7 @@ function loopThroughMotion() {
         // console.log("No need to update", currentMotionFrameIndex, lastMessageTime, motion[currentMotionFrameIndex+1].timestamp)
         // requestAnimationFrame(() => loopThroughMotion(motionName));
     }
+
 }
 
 function updateOrientationMessage(message) {
@@ -208,6 +219,7 @@ function updateDebugInfo(pitch, yaw, roll, state): void {
     document.getElementById('currentEyesState').textContent = eyeState;
     document.getElementById('nextMotionState').textContent = nextMotionState;
     document.getElementById('nextEyesState').textContent = nextEyeState;
+    document.getElementById('nextStateRationale').textContent = nextStateRationale;
 }
 
 
@@ -225,15 +237,16 @@ function onWindowResize(): void {
 
 setInterval(() => {
     updateDebugInfo(pitch, yaw, roll, "testState");
-}, debugUpdateRate);  // Update every second for demonstration
+}, debugUpdateRate);  
 
 
 async function makeApiRequest() {
+    // Old method of getting chat HTML comment.
     // const chat = getElementById<HTMLDivElement>('chat');
     // const chatHistory = chat.textContent;
-    const numRecentMessages = 10;
+    const numRecentMessages = 15;
     const sortedTimestamps = Object.keys(evi.messages).sort((a, b) => Number(b) - Number(a));
-    const latestMessages = sortedTimestamps.slice(0, numRecentMessages).map(timestamp => evi.messages[timestamp]);
+    const latestMessages = sortedTimestamps.slice(-numRecentMessages).map(timestamp => evi.messages[timestamp]);
     const chatHistory = latestMessages.join("\n")
     console.log(evi.messages, chatHistory);
     try {
@@ -251,10 +264,13 @@ async function makeApiRequest() {
         const responseData = JSON.parse(await response.json());
         nextEyeState = responseData.eyeState;
         nextMotionState = responseData.motionState;
+        nextStateRationale = responseData.reasoning;
     } catch (error) {
         console.error(error);
         // handle error
     }
+    // TODO: Tune this number.
+    setInterval(cycleNextStates, stateSwitchIntervalMillis);
 }
 
 makeApiRequest();

@@ -27,6 +27,7 @@ import {
     const authBtn = getElementById<HTMLButtonElement>('auth-btn');
     const startBtn = getElementById<HTMLButtonElement>('start-btn');
     const endBtn = getElementById<HTMLButtonElement>('end-btn');
+    const gptBtn = getElementById<HTMLButtonElement>('gpt-btn');
     const chat = getElementById<HTMLDivElement>('chat');
   
     authBtn?.addEventListener('click', authenticate);
@@ -148,7 +149,11 @@ import {
       // establish secure Web Socket connection
       client.connect();
       // update ui state
-      if (startBtn) startBtn.disabled = true;
+      if (startBtn) {
+        startBtn.disabled = true;
+        gptBtn.disabled = false;
+
+      }
       if (endBtn) endBtn.disabled = false;
     }
   
