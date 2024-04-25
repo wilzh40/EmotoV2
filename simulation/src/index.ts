@@ -1,7 +1,7 @@
 // Main Three.js code module
 import * as THREE from 'three';
-import {  fetchAllMotions } from './motion.js';
-import { fetchAllEyes } from './eyes.ts';
+import { fetchAllMotions } from '../shared/motion.js';
+import { fetchAllEyes } from '../shared/eyes.js';
 import OpenAI from "openai";
 
 // Init variables for our renderer and display.
@@ -60,16 +60,16 @@ const openai = new OpenAI(
 init();
 animate();
 
-  /**
-   * type safe getElement utility function
-   *
-   * @param id safe getElement utility function
-   * @returns the HTML element if found
-   */
-  function getElementById<T extends HTMLElement>(id: string): T | null {
+/**
+ * type safe getElement utility function
+ *
+ * @param id safe getElement utility function
+ * @returns the HTML element if found
+ */
+function getElementById<T extends HTMLElement>(id: string): T | null {
     const element = document.getElementById(id);
     return element as T | null;
-  }
+}
 
 function init() {
     // Scene setup.
@@ -131,7 +131,7 @@ function init() {
 
     // Add actions to certain buttons.
     const gptBtn = getElementById<HTMLButtonElement>('gpt-btn');
-    gptBtn?.addEventListener('click', fetchChatCompletion);
+    gptBtn?.addEventListener("click", makeApiRequest);
 
 }
 
@@ -224,32 +224,26 @@ setInterval(() => {
 }, debugUpdateRate);  // Update every second for demonstration
 
 
-async function fetchChatCompletion(): Promise<void> {
-    const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: "You are a helpful assistant." }],
-        model: "gpt-3.5-turbo",
-      });
-    console.log(completion.choices[0]);
-    // try {
-    //     const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': "application/json",
-    //             'Authorization': `Bearer ${OAI_API_KEY}`
-    //         },
-    //         body: JSON.stringify({
-    //             prompt: 'Call ChatGPT4 API',
-    //             max_tokens: 100,
-    //             temperature: 0.7,
-    //             n: 1,
-    //             stop: '\n'
-    //         })
-    //     });
-
-    //     const responseData = await response.json();
-    //     const completion = responseData.choices[0].text.trim();
-    //     console.log(completion);
-    // } catch (error) {
-    //     console.error('Error calling ChatGPT4 API:', error);
-    // }
+async function makeApiRequest() {
+    try {
+        const response = await fetch('/api/inference', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                possibleMotionStates: motionStates,
+                possibleEyeStates: eyeStates,
+                chatHistory: "placeholder",
+            })
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        // handle response data
+    } catch (error) {
+        console.error(error);
+        // handle error
+    }
 }
+
+makeApiRequest();

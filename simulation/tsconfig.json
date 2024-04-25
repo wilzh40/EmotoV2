@@ -19,5 +19,5 @@
       "noUnusedParameters": false,
       "noFallthroughCasesInSwitch": true,
     },
-    "include": ["src", "src/index.ts", "src/motion.js"]
+    "include": ["src", "src/index.ts", "src/motion.ts", "shared/eyes.js", "shared/motion.js", "vite.config.ts", "shared/motion.js", "api/inference.js"]
   }
