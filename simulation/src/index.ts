@@ -26,6 +26,7 @@ let currentMotionStateIndex = 0;
 let currentEyeStateIndex = 0;
 let motionState = motionStates[currentMotionStateIndex];
 let eyeState = eyeStates[currentEyeStateIndex];
+let nextMotionState, nextEyeState;
 console.log("Motion states:", motionStates);
 console.log("Eye states:", eyeStates);
 
@@ -204,6 +205,8 @@ function updateDebugInfo(pitch, yaw, roll, state): void {
     document.getElementById('timestamp').textContent = performance.now().toFixed(2);
     document.getElementById('currentMotionState').textContent = motionState;
     document.getElementById('currentEyesState').textContent = eyeState;
+    document.getElementById('nextMotionState').textContent = nextMotionState;
+    document.getElementById('nextEyesState').textContent = nextEyeState;
 }
 
 
@@ -237,9 +240,9 @@ async function makeApiRequest() {
                 chatHistory: "placeholder",
             })
         });
-        const responseData = await response.json();
-        console.log(responseData);
-        // handle response data
+        const responseData = JSON.parse(await response.json());
+        nextEyeState = responseData.eyeState;
+        nextMotionState = responseData.motionState;
     } catch (error) {
         console.error(error);
         // handle error

@@ -19,7 +19,7 @@ export default async function (req, res) {
         motion: ${possibleMotionStates}
         eyes: ${possibleEyeStates}
 
-        Return the most probable eye and motion state.
+        Return the most probable eye and motion state and a reasoning for each choice.
 
         Return in json after RESPONSE: with no extra text. 
 
@@ -28,7 +28,8 @@ export default async function (req, res) {
         Response:
         {
             "motionState": "opening",
-            "eyeState": "happy_up"
+            "eyeState": "happy_up",
+            "reasoning": "My body language indicates I am friendly and happy to meet you!"
         }
 
         Text: ${chatHistory}
@@ -44,6 +45,6 @@ export default async function (req, res) {
         model: "gpt-3.5-turbo",
     });
  
-    console.log(completion.choices[0]);
-    res.status(200).send(completion.choices[0]);
+    console.log(completion.choices[0].message.content);
+    res.status(200).json(completion.choices[0].message.content);
 }
