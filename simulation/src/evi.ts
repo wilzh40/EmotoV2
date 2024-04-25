@@ -152,7 +152,6 @@ import {
       if (startBtn) {
         startBtn.disabled = true;
         gptBtn.disabled = false;
-
       }
       if (endBtn) endBtn.disabled = false;
     }

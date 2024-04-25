@@ -24,11 +24,10 @@
     "include": [
         "src/evi.ts",
         "src/index.ts",
-        "src/motion.ts",
         "shared/eyes.js",
         "shared/motion.js",
         "vite.config.ts",
-        "shared/motion.js",
+        "src/vite-env.d.ts",
         "api/inference.js"
     ]
 }

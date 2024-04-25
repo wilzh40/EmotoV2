@@ -5,27 +5,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EmotoV2</title>
-  <script type="module" crossorigin src="/assets/index-CQ2E4eIV.js"></script>
+  <script type="module" crossorigin src="/assets/index-DbHt0rCr.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-BKwto0QC.css">
 </head>
 
 <body>
-  <div id="chat" class="chat-view"></div>
   <div id="debugView" class="debug-view">
+    <div id="app">
+      <button id="auth-btn">Authenticate</button>
+      <button id="start-btn" disabled="true">Start</button>
+      <button id="end-btn" disabled="true">End</button>
+      <button id="gpt-btn" disabled="true"> GPT </button>
+    </div>
     <div>Pitch: <span id="pitchValue">0</span>°</div>
     <div>Yaw: <span id="yawValue">0</span>°</div>
     <div>Roll: <span id="rollValue">0</span>°</div>
     <div>Timestamp: <span id="timestamp">Idle</span></div>
     <div>Current Motion: <span id="currentMotionState">Idle</span></div>
     <div>Current Eye Sequence: <span id="currentEyesState">Idle</span></div>
-
-    <div id="app">
-      <button id="auth-btn">Authenticate</button>
-      <button id="start-btn" disabled="true">Start</button>
-      <button id="end-btn" disabled="true">End</button>
-      <button id="gpt-btn"> GPT </button>
-    </div>
+    <div>Next Motion: <span id="nextMotionState">Idle</span></div>
+    <div>Next Eye Sequence: <span id="nextEyesState">Idle</span></div>
+    <div>Rationale: <span id="nextStateRationale">Idle</span></div>
+    <div id="chat" class="chat-view"></div>
   </div>
 </body>
-</html>
 
+</html>
