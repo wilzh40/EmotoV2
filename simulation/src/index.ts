@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { fetchAllMotions } from '../shared/motion.js';
 import { fetchAllEyes } from '../shared/eyes.js';
 import OpenAI from "openai";
+import * as evi from './evi.ts'
 
 // Init variables for our renderer and display.
 let camera, scene, renderer, videoMesh;
@@ -228,6 +229,13 @@ setInterval(() => {
 
 
 async function makeApiRequest() {
+    // const chat = getElementById<HTMLDivElement>('chat');
+    // const chatHistory = chat.textContent;
+    const numRecentMessages = 10;
+    const sortedTimestamps = Object.keys(evi.messages).sort((a, b) => Number(b) - Number(a));
+    const latestMessages = sortedTimestamps.slice(0, numRecentMessages).map(timestamp => evi.messages[timestamp]);
+    const chatHistory = latestMessages.join("\n")
+    console.log(evi.messages, chatHistory);
     try {
         const response = await fetch('/api/inference', {
             method: 'POST',
@@ -237,7 +245,7 @@ async function makeApiRequest() {
             body: JSON.stringify({
                 possibleMotionStates: motionStates,
                 possibleEyeStates: eyeStates,
-                chatHistory: "placeholder",
+                chatHistory
             })
         });
         const responseData = JSON.parse(await response.json());

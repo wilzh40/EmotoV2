@@ -8,6 +8,11 @@ import {
   } from '@humeai/voice';
   
   /**
+   * Dictionary representing messages sent from user to message.
+   * The keys are timestamps and the values are messages.
+   */
+  export let messages: { [timestamp: string]: string } = {};
+  /**
    * type safe getElement utility function
    *
    * @param id safe getElement utility function
@@ -239,5 +244,6 @@ import {
       const messageEl = document.createElement('p');
       messageEl.innerHTML = `<strong>[${timestamp}] ${role}:</strong> ${content}`;
       chat?.appendChild(messageEl);
+      messages[timestamp] = content;
     }
   })();

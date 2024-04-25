@@ -21,7 +21,7 @@ export default async function (req, res) {
 
         Return the most probable eye and motion state and a reasoning for each choice.
 
-        Return in json after RESPONSE: with no extra text. 
+        Return in json after RESPONSE: with no extra text or extraneous quotation marks such that it can be parsed as JSON.
 
         Example:
         "Hi, how are you doing today?"
@@ -43,8 +43,10 @@ export default async function (req, res) {
             { role: "user", content: prompt },
         ],
         model: "gpt-3.5-turbo",
+        temperature: 1.0
     });
  
-    console.log(completion.choices[0].message.content);
+    console.log("Prompt: ", prompt)
+    console.log("Response: ", completion.choices[0].message.content);
     res.status(200).json(completion.choices[0].message.content);
 }
